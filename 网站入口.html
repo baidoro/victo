@@ -1,0 +1,430 @@
+<html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>冀韵 - 用户登录</title>
+  <!-- 引入Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- 配置Tailwind自定义颜色和字体 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#2D2D2D',        // 墨色
+            paper: '#F5F2E9',      // 宣纸色
+            cinnabar: '#9E2A2B',   // 朱砂红
+            bamboo: '#708642',     // 竹青色
+            coffee: '#8B5A2B'      // 茶色
+          },
+          fontFamily: {
+            kai: ['"Noto Serif SC"', 'serif'],  // 楷体风格
+            song: ['"Noto Serif SC"', 'serif']  // 宋体风格
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- 自定义工具类 -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .bg-texture {
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%238b5a2b' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+      }
+      .ink-splash {
+        position: relative;
+      }
+      .ink-splash::after {
+        content: '';
+        position: absolute;
+        width: 120%;
+        height: 120%;
+        top: -10%;
+        left: -10%;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627,5.373c-3.886-3.886-10.18-3.886-14.065,0L30,16.869L19.438,6.306c-3.886-3.886-10.18-3.886-14.065,0 s-3.886,10.18,0,14.065L16.869,30L6.306,40.562c-3.886,3.886-3.886,10.18,0,14.065s10.18,3.886,14.065,0L30,43.131l10.562,10.562 c3.886,3.886,10.18,3.886,14.065,0s3.886-10.18,0-14.065L43.131,30l10.562-10.562C58.513,15.553,58.513,9.259,54.627,5.373z M30,40 c-5.514,0-10-4.486-10-10s4.486-10,10-10s10,4.486,10,10S35.514,40,30,40z' fill='%232d2d2d' fill-opacity='0.03'/%3E%3C/svg%3E");
+        opacity: 0.6;
+        z-index: -1;
+      }
+      .brush-border {
+        position: relative;
+      }
+      .brush-border::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #9E2A2B;
+        transform: scaleX(0.8);
+        transition: transform 0.3s ease;
+      }
+      .brush-border:hover::after {
+        transform: scaleX(1);
+      }
+    }
+  </style>
+  
+  <!-- 引入中文字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&amp;display=swap" rel="stylesheet">
+</head>
+<body class="bg-paper bg-texture min-h-screen font-song text-ink">
+  <!-- 页面容器 -->
+  <div class="container mx-auto px-4 py-8 relative">
+    <!-- Logo -->
+    <div class="absolute top-6 left-6 md:top-8 md:left-8 z-10">
+      <div class="flex items-center ink-splash">
+        <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-ink flex items-center justify-center">
+          <span class="text-paper text-xl md:text-2xl font-kai">冀</span>
+        </div>
+        <span class="ml-3 text-xl md:text-2xl font-kai text-ink">新视冀</span>
+      </div>
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="flex flex-col md:flex-row items-center justify-center min-h-[80vh] pt-16">
+      <!-- 左侧文化元素展示 -->
+      <div class="hidden md:block md:w-1/2 lg:w-5/12 mb-10 md:mb-0 md:pr-10">
+        <div class="relative">
+          <!-- 装饰性边框 -->
+          <div class="absolute -top-4 -left-4 w-full h-full border-2 border-ink/10 rounded"></div>
+          <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/bc109c9943d340a38888242f8f2e9768~tplv-a9rns2rl98-image.image?rcl=2025081517162930E69CC7AF2BE4B8D133&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1755854190&amp;x-signature=s4%2FjdYfZ3DoQKK0PMAD%2BlZ9QcKo%3D" alt="传统水墨画风格的山水图" class="w-full h-auto rounded shadow-xl relative z-10 transform transition-transform duration-700 hover:scale-[1.02]">
+          <div class="absolute -bottom-4 -right-4 w-24 h-24 border-2 border-cinnabar/20 rounded z-0"></div>
+        </div>
+        <div class="mt-10 text-center">
+          <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-kai text-ink leading-relaxed">
+            以文会友，<br class="md:hidden">以友辅仁
+          </h2>
+          <p class="mt-4 text-ink/70 italic font-song">探索河北文化魅力</p>
+        </div>
+      </div>
+      
+      <!-- 右侧登录/注册表单 -->
+      <div class="w-full md:w-1/2 lg:w-4/12 max-w-md">
+        <div class="bg-white/70 backdrop-blur-sm rounded-lg shadow-xl p-8 border border-ink/10 transform transition-all duration-500 hover:shadow-ink/5">
+          <!-- 表单标题 -->
+          <div class="text-center mb-8">
+            <h1 class="text-3xl font-kai text-ink" id="formTitle">登录</h1>
+            <div class="w-16 h-1 bg-cinnabar/60 mx-auto mt-2 rounded-full"></div>
+            <p class="mt-4 text-ink/60" id="formSubtitle">欢迎回来，请登录您的账号</p>
+          </div>
+          
+          <!-- 登录表单 -->
+          <form id="loginForm" class="space-y-6">
+            <div class="space-y-2">
+              <label for="loginUsername" class="block text-sm font-medium text-ink/80">用户名</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-ink/50">
+                  <i class="fa fa-user"></i>
+                </span>
+                <input type="text" id="loginUsername" class="w-full pl-10 pr-4 py-3 rounded-lg border border-ink/10 bg-paper/30 focus:border-cinnabar focus:ring-2 focus:ring-cinnabar/10 outline-none transition-all" placeholder="请输入用户名" required="">
+              </div>
+            </div>
+            
+            <div class="space-y-2">
+              <label for="loginPassword" class="block text-sm font-medium text-ink/80">密码</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-ink/50">
+                  <i class="fa fa-lock"></i>
+                </span>
+                <input type="password" id="loginPassword" class="w-full pl-10 pr-10 py-3 rounded-lg border border-ink/10 bg-paper/30 focus:border-cinnabar focus:ring-2 focus:ring-cinnabar/10 outline-none transition-all" placeholder="请输入密码" required="">
+                <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 text-ink/50 hover:text-ink transition-colors" id="toggleLoginPassword">
+                  <i class="fa fa-eye-slash"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-end">
+              <div class="flex items-center">
+                <input type="checkbox" id="rememberMe" class="h-4 w-4 rounded border-ink/20 text-cinnabar focus:ring-cinnabar/30">
+                <label for="rememberMe" class="ml-2 block text-sm text-ink/70">记住我</label>
+              </div>
+            </div>
+            
+            <button type="submit" class="w-full bg-ink hover:bg-ink/90 text-paper font-medium py-3 px-4 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg">
+              登录
+            </button>
+            
+            <div class="text-center text-ink/70 text-sm">
+              还没有账号？ <a href="#" id="showRegisterForm" class="text-cinnabar hover:text-cinnabar/80 font-medium transition-colors brush-border inline-block">立即注册</a>
+            </div>
+          </form>
+          
+          <!-- 注册表单 (默认隐藏) -->
+          <form id="registerForm" class="space-y-6 hidden">
+            <div class="space-y-2">
+              <label for="registerUsername" class="block text-sm font-medium text-ink/80">用户名</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-ink/50">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+                <input type="text" id="registerUsername" class="w-full pl-10 pr-4 py-3 rounded-lg border border-ink/10 bg-paper/30 focus:border-cinnabar focus:ring-2 focus:ring-cinnabar/10 outline-none transition-all" placeholder="请设置用户名" required="">
+              </div>
+            </div>
+            
+            <div class="space-y-2">
+              <label for="registerPassword" class="block text-sm font-medium text-ink/80">密码</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-ink/50">
+                  <i class="fa fa-lock"></i>
+                </span>
+                <input type="password" id="registerPassword" class="w-full pl-10 pr-10 py-3 rounded-lg border border-ink/10 bg-paper/30 focus:border-cinnabar focus:ring-2 focus:ring-cinnabar/10 outline-none transition-all" placeholder="请设置密码" required="">
+                <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 text-ink/50 hover:text-ink transition-colors" id="toggleRegisterPassword">
+                  <i class="fa fa-eye-slash"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="space-y-2">
+              <label for="confirmPassword" class="block text-sm font-medium text-ink/80">确认密码</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-ink/50">
+                  <i class="fa fa-lock"></i>
+                </span>
+                <input type="password" id="confirmPassword" class="w-full pl-10 pr-10 py-3 rounded-lg border border-ink/10 bg-paper/30 focus:border-cinnabar focus:ring-2 focus:ring-cinnabar/10 outline-none transition-all" placeholder="请再次输入密码" required="">
+                <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 text-ink/50 hover:text-ink transition-colors" id="toggleConfirmPassword">
+                  <i class="fa fa-eye-slash"></i>
+                </button>
+              </div>
+            </div>
+            
+            <button type="submit" class="w-full bg-ink hover:bg-ink/90 text-paper font-medium py-3 px-4 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg">
+              注册
+            </button>
+            
+            <div class="text-center text-ink/70 text-sm">
+              已有账号？ <a href="#" id="showLoginForm" class="text-cinnabar hover:text-cinnabar/80 font-medium transition-colors brush-border inline-block">立即登录</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer class="mt-16 text-center text-ink/60 text-sm py-6 border-t border-ink/10">
+      <p>© 2025 冀韵 · 以文化人，以韵动人</p>
+      <div class="flex justify-center mt-4 space-x-6">
+        <a href="#" class="hover:text-cinnabar transition-colors"><i class="fa fa-weibo"></i></a>
+        <a href="#" class="hover:text-cinnabar transition-colors"><i class="fa fa-wechat"></i></a>
+        <a href="#" class="hover:text-cinnabar transition-colors"><i class="fa fa-envelope"></i></a>
+      </div>
+    </footer>
+  </div>
+  
+  <!-- 通知提示框 -->
+  <div id="notification" class="fixed top-8 right-8 px-6 py-4 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 flex items-center z-50"></div>
+  
+  <script>
+    // DOM元素
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const showRegisterForm = document.getElementById('showRegisterForm');
+    const showLoginForm = document.getElementById('showLoginForm');
+    const formTitle = document.getElementById('formTitle');
+    const formSubtitle = document.getElementById('formSubtitle');
+    const notification = document.getElementById('notification');
+    
+    // 密码显示/隐藏切换
+    const togglePassword = (buttonId, passwordId) => {
+      const button = document.getElementById(buttonId);
+      const password = document.getElementById(passwordId);
+      
+      button.addEventListener('click', () => {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        
+        // 切换图标
+        const icon = button.querySelector('i');
+        if (type === 'password') {
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        } else {
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
+      });
+    };
+    
+    togglePassword('toggleLoginPassword', 'loginPassword');
+    togglePassword('toggleRegisterPassword', 'registerPassword');
+    togglePassword('toggleConfirmPassword', 'confirmPassword');
+    
+    // 切换表单动画
+    const fadeIn = (element) => {
+      element.style.opacity = '0';
+      element.style.transform = 'translateY(10px)';
+      element.classList.remove('hidden');
+      
+      // 触发重绘
+      void element.offsetWidth;
+      
+      element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      element.style.opacity = '1';
+      element.style.transform = 'translateY(0)';
+    };
+    
+    const fadeOut = (element, callback) => {
+      element.style.opacity = '1';
+      element.style.transform = 'translateY(0)';
+      
+      // 触发重绘
+      void element.offsetWidth;
+      
+      element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      element.style.opacity = '0';
+      element.style.transform = 'translateY(10px)';
+      
+      setTimeout(() => {
+        element.classList.add('hidden');
+        if (callback) callback();
+      }, 300);
+    };
+    
+    // 切换到注册表单
+    showRegisterForm.addEventListener('click', (e) => {
+      e.preventDefault();
+      fadeOut(loginForm, () => {
+        formTitle.textContent = '注册';
+        formSubtitle.textContent = '创建新账号，开启文化之旅';
+        fadeIn(registerForm);
+      });
+    });
+    
+    // 切换到登录表单
+    showLoginForm.addEventListener('click', (e) => {
+      e.preventDefault();
+      fadeOut(registerForm, () => {
+        formTitle.textContent = '登录';
+        formSubtitle.textContent = '欢迎回来，请登录您的账号';
+        fadeIn(loginForm);
+      });
+    });
+    
+    // 显示通知
+    const showNotification = (message, isError = false) => {
+      notification.textContent = message;
+      notification.className = 'fixed top-8 right-8 px-6 py-4 rounded-lg shadow-lg transform translate-x-0 transition-transform duration-300 flex items-center z-50';
+      
+      if (isError) {
+        notification.classList.add('bg-red-50', 'text-red-700', 'border', 'border-red-100');
+      } else {
+        notification.classList.add('bg-green-50', 'text-green-700', 'border', 'border-green-100');
+      }
+      
+      // 3秒后隐藏通知
+      setTimeout(() => {
+        notification.classList.add('translate-x-full');
+      }, 3000);
+    };
+    
+    // 从localStorage获取用户
+    const getUsers = () => {
+      const users = localStorage.getItem('users');
+      return users ? JSON.parse(users) : {};
+    };
+    
+    // 保存用户到localStorage
+    const saveUser = (username, password) => {
+      const users = getUsers();
+      users[username] = password;
+      localStorage.setItem('users', JSON.stringify(users));
+    };
+    
+    // 注册表单提交
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById('registerUsername').value.trim();
+      const password = document.getElementById('registerPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      // 验证
+      if (username.length < 3) {
+        showNotification('用户名长度不能少于3个字符', true);
+        return;
+      }
+      
+      if (password.length < 6) {
+        showNotification('密码长度不能少于6个字符', true);
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        showNotification('两次输入的密码不一致', true);
+        return;
+      }
+      
+      const users = getUsers();
+      if (users[username]) {
+        showNotification('用户名已存在', true);
+        return;
+      }
+      
+      // 保存用户
+      saveUser(username, password);
+      showNotification('注册成功，请登录');
+      
+      // 切换到登录表单
+      fadeOut(registerForm, () => {
+        formTitle.textContent = '登录';
+        formSubtitle.textContent = '欢迎回来，请登录您的账号';
+        fadeIn(loginForm);
+      });
+      
+      // 清空表单
+      registerForm.reset();
+      
+      // 自动填充用户名
+      document.getElementById('loginUsername').value = username;
+    });
+    
+    // 登录表单提交
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      
+      const users = getUsers();
+      
+      if (!users[username]) {
+        showNotification('用户名不存在', true);
+        return;
+      }
+      
+      if (users[username] !== password) {
+        showNotification('密码不正确', true);
+        return;
+      }
+      
+      // 记住登录状态
+      if (document.getElementById('rememberMe').checked) {
+        localStorage.setItem('loggedInUser', username);
+      } else {
+        sessionStorage.setItem('loggedInUser', username);
+      }
+      
+      showNotification(`登录成功，欢迎回来，${username}！`);
+      
+      // 登录成功后跳转（核心修改处）
+      setTimeout(() => {
+        window.location.href ="index.html"; // 替换为你的目标页面路径
+      }, 1000);
+    });
+    
+    // 检查是否有记住的用户
+    window.addEventListener('load', () => {
+      const loggedInUser = localStorage.getItem('loggedInUser');
+      if (loggedInUser) {
+        document.getElementById('loginUsername').value = loggedInUser;
+        document.getElementById('rememberMe').checked = true;
+      }
+    });
+  </script>
+</body></html>
